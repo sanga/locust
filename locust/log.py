@@ -1,5 +1,7 @@
 import logging
 import sys
+import socket
+hn = socket.gethostname()
 
 def setup_logging(loglevel, logfile):
     numeric_level = getattr(logging, loglevel.upper(), None)
@@ -20,14 +22,14 @@ class StdOutWrapper(object):
     Wrapper for stdout
     """
     def write(self, s):
-        stdout_logger.info(s.strip())
+        stdout_logger.info('{0}: {1}'.format(hn, s.strip()))
 
 class StdErrWrapper(object):
     """
     Wrapper for stderr
     """
     def write(self, s):
-        stderr_logger.error(s.strip())
+        stderr_logger.error('{0}: {1}'.format(hn, s.strip()))
 
 # set up logger for the statistics tables
 console_logger = logging.getLogger("console_logger")
