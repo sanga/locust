@@ -134,7 +134,7 @@ class TestRequestStatsWithWebserver(WebserverTestCase):
             host = "http://127.0.0.1:%i" % self.port
         l = MyLocust()
         path = "/no_content_length"
-        r = l.client.get(path, prefetch=False)
+        r = l.client.get(path, stream=True)
         self.assertEqual(0, RequestStats.get("GET", path).avg_content_length)
     
     def test_request_stats_named_endpoint(self):
