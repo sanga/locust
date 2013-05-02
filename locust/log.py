@@ -1,19 +1,20 @@
 import logging
 import sys
+import socket
 
 def setup_logging(loglevel, logfile):
     numeric_level = getattr(logging, loglevel.upper(), None)
     if numeric_level is None:
         raise ValueError("Invalid log level: %s" % loglevel)
     
-    log_format = "[%(asctime)s] %(levelname)s/%(name)s: %(message)s"
+    log_format = "[%(asctime)s] %(host)s/%(levelname)s/%(name)s: %(message)s"
     logging.basicConfig(level=numeric_level, filename=logfile, format=log_format)
     
     sys.stderr = StdErrWrapper()
     sys.stdout = StdOutWrapper()
 
-stdout_logger = logging.getLogger("stdout")
-stderr_logger = logging.getLogger("stderr")
+stdout_logger = logging.LoggerAdapter(logging.getLogger("stdout"), {'host': socket.gethostname()})
+stderr_logger = logging.LoggerAdapter(logging.getLogger("stderr"), {'host': socket.gethostname()})
 
 class StdOutWrapper(object):
     """
@@ -35,7 +36,7 @@ console_logger = logging.getLogger("console_logger")
 sh = logging.StreamHandler()
 sh.setLevel(logging.INFO)
 # formatter that doesn't include anything but the message
-sh.setFormatter(logging.Formatter('%(message)s'))
+sh.setFormatter(logging.Formatter('%(host)s %(message)s'))
 console_logger.addHandler(sh)
 console_logger.propagate = False
 
