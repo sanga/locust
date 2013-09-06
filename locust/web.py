@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import json
+import copy
 import os.path
 from time import time
 from itertools import chain
@@ -12,7 +13,7 @@ from flask import Flask, make_response, request, render_template
 import runners
 from runners import MasterLocustRunner
 from locust.stats import median_from_dict
-from locust import version
+from locust import version, events
 import gevent
 
 import logging
@@ -202,6 +203,7 @@ def request_stats():
         _request_stats_context_cache = {"last_time": elapsed - now, "report": report, "cache_time": cache_time}
     else:
         report = _request_stats_context_cache["report"]
+    events.stats_called.fire(copy.deepcopy(report))
     return json.dumps(report)
 
 @app.route("/exceptions")

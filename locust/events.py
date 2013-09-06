@@ -103,3 +103,13 @@ quitting = EventHook()
 """
 *quitting* is fired when the locust process in exiting
 """
+
+stats_called = EventHook()
+"""
+*stats_called* is fired when the web api /stats/requests is called. Can be used to push stats data to
+some other monitoring system, for example, like Graphite
+
+Event is fired with the following arguments:
+
+* *stats_json_object*: a json object containing the current locust request stats
+"""
