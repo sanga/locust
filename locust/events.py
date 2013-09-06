@@ -1,3 +1,7 @@
+import logging
+
+log = logging.getLogger(__name__)
+
 class EventHook(object):
 	"""
 	Simple event class used to provide hooks for different types of events in Locust.
@@ -23,8 +27,12 @@ class EventHook(object):
 		return self
 	
 	def fire(self, *args, **kwargs):
+	        # probably also want to make sure that a rogue handler can't hang either
 		for handler in self._handlers:
-			handler(*args, **kwargs)
+		        try:
+			    handler(*args, **kwargs)
+                        except Exception as e:
+                            log.warning('event handler: {0}, failed with exception: {1}'.format(handler, e))
 
 request_success = EventHook()
 """
